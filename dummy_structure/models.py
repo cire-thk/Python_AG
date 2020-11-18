@@ -20,6 +20,7 @@ class Component:
         self.status = pd.DataFrame({'Connected': [False], 'Running': [False]})
 
     def get_status(self):
+        print('Status of', self.name, ':')
         print(self.status)
 
 

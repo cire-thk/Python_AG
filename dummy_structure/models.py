@@ -1,4 +1,4 @@
-"""This is the model module of dummy_structure.
+"""This is the model module of dummy_structure providing models for an energy system simulation.
 The dummy_structure shows a suggestion for an objective-oriented programming approach to use as a standard in the
 Python-AG of the Cologne Institute for Renewable Energy (CIRE) at the University of Applied Sciences Cologne (TH Köln).
 """

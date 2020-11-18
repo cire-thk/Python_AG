@@ -5,7 +5,7 @@ Python-AG of the Cologne Institute for Renewable Energy (CIRE) at the University
 __version__ = '0.1'
 __author__ = 'srummmeny'
 
-# from dummy_constants import *
+from dummy_structure_constants import TIME_SERIES_PATH
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -37,22 +37,32 @@ class Photovoltaic(Component):
 
     def curtail(self, p_c, t_start=0, t_end=2**100000):
         t = t_start
-        while t <= min(self.df.index[-1], t_end):
-            self.df['after'][t] = max(self.df['before'][t] - p_c, 0)
+        while t <= min(len(self.df.index)-1, t_end):
+            self.df['after'][df.index[t]] = max(self.df['before'][df.index[t]] - p_c, 0)
             t += 1
 
     def limit(self, p_l, t_start=0, t_end=2**100000):
         t = t_start
-        while t <= min(self.df.index[-1], t_end):
-            self.df['after'][t] = min(self.df['before'][t], p_l)
+        while t <= min(len(self.df.index)-1, t_end):
+            self.df['after'][df.index[t]] = min(self.df['before'][df.index[t]], p_l)
             t += 1
 
 
 if __name__ == '__main__':
-    df = pd.DataFrame({'before': [0, 0, 0, 0.5, 1.7, 3.4, 6.8, 8.1, 8.5, 7.1, 4.2, 1.8, 0.4, 0, 0, 0]})
 
-    PV = Photovoltaic(12, name='PV_Meyerstr_12', p_profile=df)
+    # load and format csv file from data/
+    filename = 'sample_pv_1day.csv'
+    df = pd.read_csv(TIME_SERIES_PATH+filename, sep=';', index_col=0, na_values=' ')
+    df.index = pd.to_datetime(df.index, format='%d.%m.%y %H:%M')
+    df = df.stack().str.replace(',', '.').unstack()
+    df = df.rename(columns={'P [kW]': 'before'})
+    df['before'] = df['before'].astype(float)
+
+    # apply Photovoltaic model
+    PV = Photovoltaic(65, name='PV_Meyerstr_12', p_profile=df)
     PV.get_status()
-    PV.limit(4)
+    PV.limit(0.66*PV.p_n)
+
+    # plot
     PV.df.plot()
     plt.show()

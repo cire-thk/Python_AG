@@ -30,22 +30,20 @@ class Photovoltaic(Component):
     def __init__(self, p_n: int, name=None, p_profile=None):
         super().__init__(name=name)
         self.p_n = p_n
-        self.df = pd.DataFrame({'before': [], 'after': []})
+        self.df = pd.DataFrame({'P_in': [], 'P_out': []})
         if p_profile is not None:
             self.df = pd.concat([self.df, p_profile])
             self.status['Running'] = True
 
-    def curtail(self, p_c, t_start=0, t_end=2**100000):
-        t = t_start
-        while t <= min(len(self.df.index)-1, t_end):
-            self.df['after'][df.index[t]] = max(self.df['before'][df.index[t]] - p_c, 0)
-            t += 1
+    def curtail(self, p_to_curtail, t):
+        """ curtail the PV power by power amount p_to_curtail in time step t.
+        """
+        self.df['P_out'][df.index[t]] = max(self.df['P_in'][df.index[t]] - p_to_curtail, 0)
 
-    def limit(self, p_l, t_start=0, t_end=2**100000):
-        t = t_start
-        while t <= min(len(self.df.index)-1, t_end):
-            self.df['after'][df.index[t]] = min(self.df['before'][df.index[t]], p_l)
-            t += 1
+    def limit(self, p_limit, t):
+        """ limit the PV power to power limit p_limit in time step t.
+        """
+        self.df['P_out'][df.index[t]] = min(self.df['P_in'][df.index[t]], p_limit)
 
 
 if __name__ == '__main__':
@@ -55,14 +53,15 @@ if __name__ == '__main__':
     df = pd.read_csv(TIME_SERIES_PATH+filename, sep=';', index_col=0, na_values=' ')
     df.index = pd.to_datetime(df.index, format='%d.%m.%y %H:%M')
     df = df.stack().str.replace(',', '.').unstack()
-    df = df.rename(columns={'P [kW]': 'before'})
-    df['before'] = df['before'].astype(float)
+    df = df.rename(columns={'P [kW]': 'P_in'})
+    df['P_in'] = df['P_in'].astype(float)
 
     # apply Photovoltaic model
     PV = Photovoltaic(65, name='PV_Meyerstr_12', p_profile=df)
-    PV.get_status()
-    PV.limit(0.66*PV.p_n)
+    for i in range(len(PV.df.index)):
+        PV.limit(0.66*PV.p_n, i)
 
     # plot
+    PV.get_status()
     PV.df.plot()
     plt.show()

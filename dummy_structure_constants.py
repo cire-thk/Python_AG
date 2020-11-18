@@ -16,5 +16,5 @@ CONFIG_PATH: str = os.path.join(ROOT_PATH, 'dummy_structure/config/')
 START_TIME = '{:04d}{:02d}{:02d}{:02d}{:02d}{:02d}'.format(dt.datetime.now().year, dt.datetime.now().month,
                                                            dt.datetime.now().day, dt.datetime.now().hour,
                                                            dt.datetime.now().minute, dt.datetime.now().second)
-RESULT_PATH = os.path.join(ROOT_PATH, 'dummy_structure/results/', START_TIME)
-os.mkdir(RESULT_PATH)
+# RESULT_PATH = os.path.join(ROOT_PATH, 'dummy_structure/results/', START_TIME)
+# os.mkdir(RESULT_PATH)

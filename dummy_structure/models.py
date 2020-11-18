@@ -33,6 +33,7 @@ class Photovoltaic(Component):
         self.df = pd.DataFrame({'before': [], 'after': []})
         if p_profile is not None:
             self.df = pd.concat([self.df, p_profile])
+            self.status['Running'] = True
 
     def curtail(self, p_c, t_start=0, t_end=2**100000):
         t = t_start
@@ -51,6 +52,7 @@ if __name__ == '__main__':
     df = pd.DataFrame({'before': [0, 0, 0, 0.5, 1.7, 3.4, 6.8, 8.1, 8.5, 7.1, 4.2, 1.8, 0.4, 0, 0, 0]})
 
     PV = Photovoltaic(12, name='PV_Meyerstr_12', p_profile=df)
+    PV.get_status()
     PV.limit(4)
     PV.df.plot()
     plt.show()

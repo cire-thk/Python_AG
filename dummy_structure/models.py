@@ -5,15 +5,17 @@ Python-AG of the Cologne Institute for Renewable Energy (CIRE) at the University
 __version__ = '0.1'
 __author__ = 'srummmeny'
 
-from dummy_structure_constants import TIME_SERIES_PATH
 import pandas as pd
 import matplotlib.pyplot as plt
+# imports from dummy structure modules
+from dummy_structure_constants import *
 
 
 class Component:
     """
     class to describe any type of component in an energy system.
     """
+
     def __init__(self, name=None, parent=None):
         self.name = name
         self.parent = parent
@@ -28,6 +30,7 @@ class Photovoltaic(Component):
     """
     class to describe any type of Photovoltaic system as a component in an energy system.
     """
+
     def __init__(self, p_n: int, name=None, p_profile=None):
         super().__init__(name=name)
         self.p_n = p_n
@@ -51,7 +54,7 @@ if __name__ == '__main__':
 
     # load and format csv file from data/
     filename = 'sample_pv_1day.csv'
-    df = pd.read_csv(TIME_SERIES_PATH+filename, sep=';', index_col=0, na_values=' ')
+    df = pd.read_csv(TIME_SERIES_PATH + filename, sep=';', index_col=0, na_values=' ')
     df.index = pd.to_datetime(df.index, format='%d.%m.%y %H:%M')
     df = df.stack().str.replace(',', '.').unstack()
     df = df.rename(columns={'P [kW]': 'P_in'})
@@ -60,7 +63,7 @@ if __name__ == '__main__':
     # apply Photovoltaic model
     PV = Photovoltaic(65, name='PV_Meyerstr_12', p_profile=df)
     for i in range(len(PV.df.index)):
-        PV.limit(0.66*PV.p_n, i)
+        PV.limit(0.66 * PV.p_n, i)
 
     # plot
     PV.get_status()

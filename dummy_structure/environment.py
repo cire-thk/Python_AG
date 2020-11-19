@@ -6,6 +6,7 @@ __version__ = '0.1'
 __author__ = 'srummmeny'
 
 import datetime as dt
+import pandas as pd
 import pandapower as pp
 # imports from dummy structure modules
 from dummy_structure_constants import *
@@ -19,15 +20,14 @@ class Environment:
         self.Grid.Line = []
         self.Grid.Transformer = []
         self.Load = []
-        self.Blackouts = []
         self.Generator = []
         self.Storage = []
-        self.P_res = []
         self.time = [t_start]
         self.clock = self.time[0]
         self.t_step = t_step.seconds/60
         for _ in range(t_len)-1:
             self.time.append(self.time[-1]+t_step)
+        self.df = pd.DataFrame({'P_res': [], 'Blackout': []}, index=self.time)
 
     # def build_grid(self, filename):
     #     df = pd.read_csv(GRID_PATH+filename)
@@ -45,7 +45,7 @@ class Environment:
     #     self.Load.append(mo.Load(profile, name))
     #
     # def add_blackouts(self, profile):
-    #     self.Blackouts.append(profile)
+    #     self.df['Blackout'].append(profile)
 
     def add_generator(self, p_n, profile=None, name=None, gen_type='PV'):
         if gen_type == 'PV':

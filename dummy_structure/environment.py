@@ -5,14 +5,11 @@ Python-AG of the Cologne Institute for Renewable Energy (CIRE) at the University
 __version__ = '0.1'
 __author__ = 'srummmeny'
 
-import pandas as pd
 import datetime as dt
 import pandapower as pp
-import matplotlib.pyplot as plt
-### imports from dummy structure modules
+# imports from dummy structure modules
 from dummy_structure_constants import *
 import dummy_structure.models as mo
-# import dummy_structure.operate as op
 
 
 class Environment:
@@ -52,14 +49,9 @@ class Environment:
         if gen_type == 'PV':
             self.Generator.append(mo.Photovoltaic(p_n, profile, name))
         if gen_type == 'WEA':
-            print('add WEA')
+            print('dummy print to add WEA')
         if gen_type == 'Diesel':
-            print('add Diesel Generator')
+            print('dummy print to add Diesel Generator')
 
     # def add_storage(self, p_n, c_n, soc=1, soc_min=0, soc_max=1, eff=1, model=None):
     #     self.Storage.append(mo.Storage(p_n, c_n, soc, soc_min, soc_max, eff, model))
-
-
-
-
-

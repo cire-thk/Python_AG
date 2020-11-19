@@ -22,10 +22,12 @@ class Environment:
         self.Blackouts = []
         self.Generator = []
         self.Storage = []
+        self.P_res = []
         self.time = [t_start]
         self.clock = self.time[0]
         self.t_step = t_step.seconds/60
-        self.P_res = []
+        for _ in range(t_len)-1:
+            self.time.append(self.time[-1]+t_step)
 
     # def build_grid(self, filename):
     #     df = pd.read_csv(GRID_PATH+filename)

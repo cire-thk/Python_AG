@@ -42,12 +42,12 @@ class Photovoltaic(Component):
     def curtail(self, p_to_curtail, t):
         """ curtail the PV power by power amount p_to_curtail in time step t.
         """
-        self.df['P_out'][self.df.index[t]] = max(self.df['P_in'][self.df.index[t]] - p_to_curtail, 0)
+        self.df['P_out'][t] = max(self.df['P_in'][t] - p_to_curtail, 0)
 
     def limit(self, p_limit, t):
         """ limit the PV power to power limit p_limit in time step t.
         """
-        self.df['P_out'][self.df.index[t]] = min(self.df['P_in'][self.df.index[t]], p_limit)
+        self.df['P_out'][t] = min(self.df['P_in'][t], p_limit)
 
 
 class Load(Component):
@@ -83,7 +83,7 @@ if __name__ == '__main__':
     PV = Photovoltaic(65, name='PV_Meyerstr_12', p_profile=df_pv)
     Load = Load(120, name='Load_Meyerstr_12', p_profile=df_load)
     for i in range(len(PV.df.index)):
-        PV.limit(0.66 * PV.p_n, i)
+        PV.limit(0.66 * PV.p_n, PV.df.index[i])
 
     # plot
     PV.get_status()

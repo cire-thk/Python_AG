@@ -25,9 +25,10 @@ class Environment:
         self.time = [t_start]
         self.clock = self.time[0]
         self.t_step = t_step.seconds/60
-        for _ in range(t_len)-1:
+        for _ in range(t_len-1):
             self.time.append(self.time[-1]+t_step)
-        self.df = pd.DataFrame({'P_res': [], 'Blackout': []}, index=self.time)
+        print(self.time)
+        self.df = pd.DataFrame(columns=['P_res', 'Blackout'], index=self.time)
 
     # def build_grid(self, filename):
     #     df = pd.read_csv(GRID_PATH+filename)
@@ -47,13 +48,16 @@ class Environment:
     # def add_blackouts(self, profile):
     #     self.df['Blackout'].append(profile)
 
-    def add_generator(self, p_n, profile=None, name=None, gen_type='PV'):
+    def add_generator(self, p_n, name=None, p_profile=None, gen_type='PV'):
         if gen_type == 'PV':
-            self.Generator.append(mo.Photovoltaic(p_n, profile, name))
+            self.Generator.append(mo.Photovoltaic(p_n, name=name, p_profile=p_profile))
         if gen_type == 'WEA':
             print('dummy print to add WEA')
         if gen_type == 'Diesel':
             print('dummy print to add Diesel Generator')
+
+    def add_load(self, p_n, name=None, p_profile=None):
+        self.Load.append(mo.Load(p_n, name=name, p_profile=p_profile))
 
     # def add_storage(self, p_n, c_n, soc=1, soc_min=0, soc_max=1, eff=1, model=None):
     #     self.Storage.append(mo.Storage(p_n, c_n, soc, soc_min, soc_max, eff, model))

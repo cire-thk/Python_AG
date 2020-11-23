@@ -15,14 +15,26 @@ class Operator:
     def __init__(self, env):
         self.env = env
 
+    def reference_strategy(self):
+        """Exemplary rule based reference dispatch strategy how to operate the environment of the dummy_structure. Here
+        the Load is equals the residual load (fully grid covered).
+        """
+        for t in self.env.time:
+            self.env.df['P_res'][t] = self.env.Load[-1].df['P_in'][t]
+        return self.env
+
     def dummy_strategy(self, p_feed_in_limit):
         """Exemplary rule based dispatch strategy how to operate the environment of the dummy_structure. Here a simple
         feed_in_limit is introduced.
         """
         for t in self.env.time:
-            self.env.df['P_res'][t] = np.nansum(self.env.Load[-1].df['P_in'][t], -self.env.PV[-1].df['P_in'][t])
+            self.env.df['P_res'][t] = np.nansum([self.env.Load[-1].df['P_in'][t], -self.env.Generator[-1].df['P_in'][t]])
             if -self.env.df['P_res'][t] > p_feed_in_limit:
-                self.env.PV[-1].curtail(-self.env.df['P_res'][t], t)
-                self.env.df['P_res'][t] -= self.env.df['P_res'][t]
+                delta = -self.env.df['P_res'][t]- p_feed_in_limit
+                self.env.Generator[-1].curtail(delta, t)
+                print(self.env.df['P_res'][t])
+                self.env.df['P_res'][t] += delta
+                print(self.env.df['P_res'][t])
             else:
                 continue
+        return self.env

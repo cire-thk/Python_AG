@@ -37,3 +37,8 @@ Temporary Items
 .apdisk
 
 # End of https://www.gitignore.io/api/macos
+
+# ignore /.idea/
+.idea/**
+__pycache__
+
